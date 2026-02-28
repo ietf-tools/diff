@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "Vue.volar",
+    "EditorConfig.EditorConfig",
+    "oxc.oxc-vscode",
+    "bradlc.vscode-tailwindcss"
+  ]
+}
