@@ -5,6 +5,7 @@ import { Command } from 'lucide-vue-next'
 
 import NavMain from '@/components/NavMain.vue'
 import NavDocs from '@/components/NavDocs.vue'
+import NavSessions from './NavSessions.vue'
 import NavSecondary from '@/components/NavSecondary.vue'
 import NavUser from '@/components/NavUser.vue'
 import {
@@ -29,15 +30,21 @@ const data = {
   },
   docs: [
     {
-      name: 'draft-abc-def-ghi',
-      url: '#'
+      id: '123',
+      name: 'draft-abc-def-ghi'
     },
     {
-      name: 'RFC 1234',
-      url: '#'
+      id: '234',
+      name: 'RFC 1234'
     },
     {
-      name: 'Untitled-1.xml',
+      id: '345',
+      name: 'Untitled-1.xml'
+    }
+  ],
+  sessions: [
+    {
+      name: 'Untitled 1',
       url: '#'
     }
   ]
@@ -50,7 +57,7 @@ const data = {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" as-child>
-            <a href="#">
+            <a>
               <div
                 class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <Command class="size-4" />
@@ -66,6 +73,7 @@ const data = {
     </SidebarHeader>
     <SidebarContent>
       <NavMain />
+      <NavSessions :docs="data.sessions" />
       <NavDocs :docs="data.docs" />
       <NavSecondary class="mt-auto" />
     </SidebarContent>

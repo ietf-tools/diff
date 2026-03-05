@@ -21,7 +21,7 @@ import {
 defineProps<{
   docs: {
     name: string
-    id: string
+    url: string
   }[]
 }>()
 
@@ -30,42 +30,34 @@ const { isMobile } = useSidebar()
 
 <template>
   <SidebarGroup class="group-data-[collapsible=icon]:hidden">
-    <SidebarGroupLabel>Documents</SidebarGroupLabel>
+    <SidebarGroupLabel>Sessions</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem v-for="item in docs" :key="item.name">
+        <SidebarMenuButton is-active as-child>
+          <a :href="item.url">
+            <Icon icon="lucide:file-text" />
+            <span>{{ item.name }}</span>
+          </a>
+        </SidebarMenuButton>
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
-            <SidebarMenuButton as-child>
-              <a class="cursor-pointer">
-                <Icon icon="lucide:file-text" />
-                <span class="w-full">{{ item.name }}</span>
-                <Icon
-                  v-if="item.id === '123'"
-                  icon="lucide:chevrons-left"
-                  class="text-pink-400 text-2xl" />
-                <Icon
-                  v-else-if="item.id === '234'"
-                  icon="lucide:chevrons-right"
-                  class="text-sky-500" />
-              </a>
-            </SidebarMenuButton>
+            <SidebarMenuAction show-on-hover>
+              <Icon icon="radix-icons:dots-horizontal" />
+              <span class="sr-only">More</span>
+            </SidebarMenuAction>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             class="w-48 rounded-lg"
             :side="isMobile ? 'bottom' : 'right'"
             :align="isMobile ? 'end' : 'start'">
             <DropdownMenuItem>
-              <Icon icon="lucide:arrow-left-to-line" />
-              <span>Open in Left Panel</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Icon icon="lucide:arrow-right-to-line" />
-              <span>Open in Right Panel</span>
+              <Icon icon="radix-icons:pin-right" />
+              <span>Rename</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Icon icon="lucide:x" />
-              <span>Remove Document</span>
+              <span>Close Session</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
