@@ -35,14 +35,14 @@ const { isMobile } = useSidebar()
       <SidebarMenuItem v-for="item in docs" :key="item.name">
         <SidebarMenuButton is-active as-child>
           <a :href="item.url">
-            <Icon icon="lucide:file-text" />
+            <Icon icon="lucide:gallery-vertical-end" />
             <span>{{ item.name }}</span>
           </a>
         </SidebarMenuButton>
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <SidebarMenuAction show-on-hover>
-              <Icon icon="radix-icons:dots-horizontal" />
+              <Icon icon="lucide:more-horizontal" />
               <span class="sr-only">More</span>
             </SidebarMenuAction>
           </DropdownMenuTrigger>
@@ -51,7 +51,7 @@ const { isMobile } = useSidebar()
             :side="isMobile ? 'bottom' : 'right'"
             :align="isMobile ? 'end' : 'start'">
             <DropdownMenuItem>
-              <Icon icon="radix-icons:pin-right" />
+              <Icon icon="lucide:edit" />
               <span>Rename</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
