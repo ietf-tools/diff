@@ -1,11 +1,20 @@
 <template>
   <header class="flex h-16 shrink-0 items-center gap-2">
     <div class="flex items-center gap-2 px-4">
-      <SidebarTrigger class="-ml-1 cursor-pointer" />
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <SidebarTrigger class="-ml-1 cursor-pointer" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Toggle Sidebar</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
       <ButtonGroup>
         <ButtonGroup class="hidden sm:flex">
-          <Button variant="outline" size="icon" aria-label="Go Back">
+          <Button variant="outline" size="icon" class="cursor-pointer" aria-label="Go Back">
             <Icon icon="lucide:save" />
           </Button>
         </ButtonGroup>
@@ -68,6 +77,22 @@
               "></span>
           </ToggleGroupItem>
         </ToggleGroup>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <NumberField id="fontsize" v-model="editorStore.fontSize" :min="8">
+                <NumberFieldContent>
+                  <NumberFieldDecrement class="cursor-pointer" />
+                  <NumberFieldInput class="w-30" />
+                  <NumberFieldIncrement class="cursor-pointer" />
+                </NumberFieldContent>
+              </NumberField>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Font Size</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </ButtonGroup>
     </div>
   </header>
@@ -89,9 +114,17 @@ import { useEditorStore } from '../stores/editor.js'
 
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
+import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput
+} from '@/components/ui/number-field'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Icon } from '@iconify/vue'
 
 const colorMode = useColorMode({ disableTransition: false })
@@ -109,6 +142,8 @@ onMounted(async () => {
     cursorBlinking: 'blink',
     originalEditable: true,
     automaticLayout: true,
+    lineNumbersMinChars: 4,
+    fontSize: editorStore.fontSize,
     padding: { top: 10, bottom: 10 },
     renderWhitespace: 'all',
     scrollBeyondLastLine: false,
@@ -124,15 +159,14 @@ onMounted(async () => {
     theme: colorMode.state.value === 'light' ? 'vs-light' : 'vs-dark'
   })
 
-  // diffEditor.onDidChangeModel(
-  //   debounce((ev) => {
-  //     console.log(ev)
-  //   }, 500)
-  // )
-  // diffEditor.onDidUpdateDiff((ev) => {
-  //   console.log(ev)
-  // })
+  // Store changes
+  diffEditor.onDidUpdateDiff(
+    debounce((ev, bob) => {
+      console.log(ev, bob)
+    }, 500)
+  )
 
+  // Load sample data
   const dataLeft = await fetch('/sample-data/draft-halen-fedae-03.xml').then((r) => r.text())
   const dataRight = await fetch('/sample-data/rfc9932.notprepped.xml').then((r) => r.text())
 
@@ -174,6 +208,16 @@ onMounted(async () => {
               revealLineCount: 10
             }
           : { enabled: false }
+      })
+    }
+  )
+
+  // Update Font Size on change
+  watch(
+    () => editorStore.fontSize,
+    (newFontSize) => {
+      diffEditor.updateOptions({
+        fontSize: newFontSize
       })
     }
   )

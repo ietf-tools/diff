@@ -31,11 +31,11 @@ const data = {
   docs: [
     {
       id: '123',
-      name: 'draft-abc-def-ghi'
+      name: 'draft-halen-fedae-03.xml'
     },
     {
       id: '234',
-      name: 'RFC 1234'
+      name: 'rfc9932.notprepped.xml'
     },
     {
       id: '345',

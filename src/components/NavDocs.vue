@@ -37,16 +37,18 @@ const { isMobile } = useSidebar()
           <DropdownMenuTrigger as-child>
             <SidebarMenuButton as-child>
               <a class="cursor-pointer">
-                <Icon icon="lucide:file-text" />
-                <span class="w-full">{{ item.name }}</span>
-                <Icon
+                <span
                   v-if="item.id === '123'"
-                  icon="lucide:chevrons-left"
-                  class="text-pink-400 text-2xl" />
-                <Icon
+                  class="rounded bg-rose-600 text-white px-1 py-0.5 text-xs font-bold"
+                  >L</span
+                >
+                <span
                   v-else-if="item.id === '234'"
-                  icon="lucide:chevrons-right"
-                  class="text-sky-500" />
+                  class="rounded bg-sky-600 text-white px-1 py-0.5 text-xs font-bold"
+                  >R</span
+                >
+                <Icon v-else icon="lucide:file-text" />
+                <span class="w-full">{{ item.name }}</span>
               </a>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
