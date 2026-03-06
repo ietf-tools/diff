@@ -156,15 +156,15 @@ onMounted(async () => {
           revealLineCount: 10
         }
       : { enabled: false },
-    theme: colorMode.state.value === 'light' ? 'vs-light' : 'vs-dark'
+    theme: colorMode.state.value === 'light' ? 'vs' : 'vs-dark'
   })
 
   // Store changes
-  diffEditor.onDidUpdateDiff(
-    debounce((ev, bob) => {
-      console.log(ev, bob)
-    }, 500)
-  )
+  // diffEditor.onDidUpdateDiff(
+  //   debounce((ev, bob) => {
+  //     console.log(ev, bob)
+  //   }, 500)
+  // )
 
   // Load sample data
   const dataLeft = await fetch('/sample-data/draft-halen-fedae-03.xml').then((r) => r.text())

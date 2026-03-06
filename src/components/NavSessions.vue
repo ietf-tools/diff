@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +31,14 @@ const { isMobile } = useSidebar()
 
 <template>
   <SidebarGroup class="group-data-[collapsible=icon]:hidden">
-    <SidebarGroupLabel>Sessions</SidebarGroupLabel>
+    <SidebarGroupLabel class="pr-0.5">
+      <span class="w-full">Sessions</span>
+      <a
+        class="text-sm hover:bg-accent px-1 py-0.5 rounded cursor-pointer"
+        aria-label="New Session">
+        <Icon icon="lucide:plus" />
+      </a>
+    </SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem v-for="item in docs" :key="item.name">
         <SidebarMenuButton is-active as-child>
@@ -41,7 +49,7 @@ const { isMobile } = useSidebar()
         </SidebarMenuButton>
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
-            <SidebarMenuAction show-on-hover>
+            <SidebarMenuAction class="cursor-pointer" show-on-hover>
               <Icon icon="lucide:more-horizontal" />
               <span class="sr-only">More</span>
             </SidebarMenuAction>

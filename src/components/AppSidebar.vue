@@ -26,7 +26,7 @@ const data = {
   user: {
     name: 'Guest',
     email: 'guest@rfc-editor.org',
-    avatar: '/avatars/shadcn.jpg'
+    avatar: ''
   },
   docs: [
     {
