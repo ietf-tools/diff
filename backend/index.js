@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid'
 
 import fastify from 'fastify'
 import fastifyCompress from '@fastify/compress'
+import fastifyCookie from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
 import fastifyFavicon from 'fastify-favicon'
 import fastifyHelmet from '@fastify/helmet'
@@ -99,6 +100,7 @@ async function main() {
   if (!process.env.DIFF_SECRET || !process.env.DIFF_SALT) {
     console.warn('WARNING - Using random session secret + salt. For DEV only.')
   }
+  app.register(fastifyCookie)
   app.register(fastifySecureSession, {
     cookieName: 'diffsession',
     secret: process.env.DIFF_SECRET ?? uuid(),
@@ -110,6 +112,7 @@ async function main() {
     }
   })
 
+  // -> Datatracker
   app.register(fastifyOAuth2, {
     name: 'datatracker',
     scope: ['openid', 'profile', 'email'],
@@ -139,6 +142,45 @@ async function main() {
   })
   app.get('/logout', async function (req, reply) {
     req.session.delete()
+    reply.redirect('/')
+  })
+
+  // -> GitHub
+  app.register(fastifyOAuth2, {
+    name: 'github',
+    credentials: {
+      client: {
+        id: process.env.DIFF_GH_CLIENT_ID,
+        secret: process.env.DIFF_GH_CLIENT_SECRET
+      },
+      auth: fastifyOAuth2.GITHUB_CONFIGURATION
+    },
+    startRedirectPath: '/login/link-github',
+    callbackUri: process.env.DIFF_GH_CALLBACK ?? 'http://localhost:5173/login/link-github/callback'
+  })
+  app.get('/login/link-github/callback', async function (req, reply) {
+    const { token } = await this.github.getAccessTokenFromAuthorizationCodeFlow(req)
+
+    req.session.set('ghAccessToken', token.access_token)
+
+    const profile = await fetch('https://api.github.com/user', {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${token.access_token}`,
+        'X-GitHub-Api-Version': '2026-03-10'
+      }
+    }).then((r) => r.json())
+    req.session.set('ghUsername', profile.login)
+
+    reply.redirect('/')
+  })
+  app.get('/login/unlink-github', async function (req, reply) {
+    if (req.session.get('ghAccessToken')) {
+      req.session.set('ghAccessToken', null)
+    }
+    if (req.session.get('ghUsername')) {
+      req.session.set('ghUsername', null)
+    }
     reply.redirect('/')
   })
 

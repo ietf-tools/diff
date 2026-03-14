@@ -7,7 +7,8 @@ async function routes(app) {
       id: req.session.get('id') ?? '',
       name: req.session.get('name') ?? 'Guest',
       email: req.session.get('email') ?? 'guest@rfc-editor.org',
-      picture: req.session.get('picture') ?? ''
+      picture: req.session.get('picture') ?? '',
+      ghUsername: req.session.get('ghUsername') ?? ''
     }
   })
 }

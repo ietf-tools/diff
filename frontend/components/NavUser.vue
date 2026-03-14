@@ -44,7 +44,15 @@
                 <Icon icon="lucide:user-round-cog" />
                 Manage Account
               </DropdownMenuItem>
-              <DropdownMenuItem @click="loginViaGitHub" class="cursor-pointer">
+              <DropdownMenuItem
+                v-if="ghUsername"
+                as="a"
+                href="/login/unlink-github"
+                class="cursor-pointer">
+                <Icon icon="lucide:github" />
+                Unlink GitHub ({{ ghUsername }})
+              </DropdownMenuItem>
+              <DropdownMenuItem v-else as="a" href="/login/link-github" class="cursor-pointer">
                 <Icon icon="lucide:github" />
                 Link to GitHub
               </DropdownMenuItem>
@@ -77,7 +85,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { v4 as uuid } from 'uuid'
 import ky from 'ky'
 import { useQuery } from '@tanstack/vue-query'
 
@@ -101,21 +108,12 @@ import {
 
 const { isMobile } = useSidebar()
 
-function loginViaGitHub() {
-  const stateKey = uuid()
-  window.sessionStorage.setItem('ghLoginState', stateKey)
-  const loginUrl = new URL('https://github.com/login/oauth/authorize')
-  loginUrl.searchParams.append('client_id', 'Iv23libdJuUYrGqTqBJ1')
-  loginUrl.searchParams.append('state', stateKey)
-  loginUrl.searchParams.append('redirect_uri', window.location.origin + '/login/link-github')
-  window.location.assign(loginUrl.toString())
-}
-
 const { isFetching, isError, data, error } = useQuery<{
   id: string
   name: string
   email: string
   picture: string
+  ghUsername: string
 }>({
   queryKey: ['userinfo'],
   queryFn: async () => await ky.post('/api/auth/userinfo').json(),
@@ -123,7 +121,8 @@ const { isFetching, isError, data, error } = useQuery<{
     id: '',
     name: 'Guest',
     email: 'guest@rfc-editor.org',
-    picture: ''
+    picture: '',
+    ghUsername: ''
   }
 })
 
@@ -141,6 +140,9 @@ const userPicture = computed(() => {
 })
 const userInitial = computed(() => {
   return data.value?.name?.substring(0, 1).toUpperCase() ?? 'G'
+})
+const ghUsername = computed(() => {
+  return data.value?.ghUsername ?? ''
 })
 
 const subtitle = computed(() => {
