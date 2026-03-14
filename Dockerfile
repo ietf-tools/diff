@@ -9,6 +9,7 @@ WORKDIR /app
 
 COPY backend backend/
 COPY dist dist/
+COPY .npmrc ./
 COPY package.json ./
 COPY package-lock.json ./
 
