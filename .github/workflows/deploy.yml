@@ -33,9 +33,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
-          fetch-tags: false
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
@@ -82,10 +79,8 @@ jobs:
           fi
 
       - name: Set package.json version
-        uses: KageKirin/set-node-package-version@v1.0.0
-        with:
-          file: package.json
-          version: ${{ steps.buildvars.outputs.pkg_version }}
+        run: |
+          yq -iP '.version = "${{ steps.buildvars.outputs.pkg_version }}"' package.json -o json
 
       - name: NPM Install + Build Site
         run: |
