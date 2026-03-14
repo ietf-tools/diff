@@ -5,14 +5,28 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 
-import { cloudflare } from '@cloudflare/vite-plugin'
-
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), vueDevTools(), tailwindcss(), cloudflare()],
+  plugins: [vue(), vueDevTools(), tailwindcss()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./frontend', import.meta.url))
     }
+  },
+  server: {
+    open: false,
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: true,
+    allowedHosts: true,
+    proxy: ['api', 'login', 'logout'].reduce((result, key) => {
+      result[`/${key}`] = {
+        target: {
+          host: '127.0.0.1',
+          port: 3000
+        }
+      }
+      return result
+    }, {})
   }
 })

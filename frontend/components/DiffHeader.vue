@@ -107,31 +107,44 @@
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+        <div class="flex items-center">
+          <Spinner class="size-5 text-purple-400" v-show="isFetching" />
+        </div>
       </ButtonGroup>
     </div>
   </header>
 </template>
 
 <script setup>
+import { useIsFetching } from '@tanstack/vue-query'
+
 import { useDocsStore } from '../stores/docs.js'
 import { useEditorStore } from '../stores/editor.js'
 
-import { Button } from '@/components/ui/button'
-import { ButtonGroup } from '@/components/ui/button-group'
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import { Button } from '@/components/ui/button/index.js'
+import { ButtonGroup } from '@/components/ui/button-group/index.js'
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select/index.js'
 import {
   NumberField,
   NumberFieldContent,
   NumberFieldDecrement,
   NumberFieldIncrement,
   NumberFieldInput
-} from '@/components/ui/number-field'
-import { Separator } from '@/components/ui/separator'
-import { SidebarTrigger } from '@/components/ui/sidebar'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+} from '@/components/ui/number-field/index.js'
+import { Separator } from '@/components/ui/separator/index.js'
+import { SidebarTrigger } from '@/components/ui/sidebar/index.js'
+import { Spinner } from '@/components/ui/spinner'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/index.js'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip/index.js'
 import { Icon } from '@iconify/vue'
 
 const docsStore = useDocsStore()
 const editorStore = useEditorStore()
+
+const isFetching = useIsFetching()
 </script>

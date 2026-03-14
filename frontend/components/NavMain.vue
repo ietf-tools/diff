@@ -33,8 +33,8 @@ import {
       <SidebarMenuItem>
         <SidebarMenuButton as-child tooltip="item.title">
           <a class="cursor-pointer">
-            <Icon icon="lucide:link" />
-            <span>Remote URL</span>
+            <Icon icon="lucide:rows-4" />
+            <span>Datatracker</span>
           </a>
         </SidebarMenuButton>
       </SidebarMenuItem>
