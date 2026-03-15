@@ -85,7 +85,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import ky from 'ky'
 import { useQuery } from '@tanstack/vue-query'
 
 import { Icon } from '@iconify/vue'
@@ -115,8 +114,7 @@ const { isFetching, isError, data, error } = useQuery<{
   picture: string
   ghUsername: string
 }>({
-  queryKey: ['userinfo'],
-  queryFn: async () => await ky.post('/api/auth/userinfo').json(),
+  queryKey: ['auth/userinfo', { method: 'POST' }],
   placeholderData: {
     id: '',
     name: 'Guest',

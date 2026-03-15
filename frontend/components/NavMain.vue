@@ -12,10 +12,12 @@ import {
 import AddFromGitHub from '@/components/AddFromGitHub.vue'
 import { reactive } from 'vue'
 import AddPublishedRfc from './AddPublishedRfc.vue'
+import AddUpload from './AddUpload.vue'
 
 const state = reactive({
   githubModal: false,
-  publishedRfcModal: false
+  publishedRfcModal: false,
+  uploadModal: false
 })
 </script>
 
@@ -48,7 +50,7 @@ const state = reactive({
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton as-child tooltip="item.title">
+        <SidebarMenuButton as-child tooltip="item.title" @click="state.uploadModal = true">
           <a class="cursor-pointer">
             <Icon icon="lucide:upload" />
             <span>Upload</span>
@@ -59,4 +61,5 @@ const state = reactive({
   </SidebarGroup>
   <AddFromGitHub v-model:open="state.githubModal" />
   <AddPublishedRfc v-model:open="state.publishedRfcModal" />
+  <AddUpload v-model:open="state.uploadModal" />
 </template>
