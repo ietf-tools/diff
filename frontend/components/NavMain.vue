@@ -8,6 +8,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar'
+
+import AddFromGitHub from '@/components/AddFromGitHub.vue'
+import { reactive } from 'vue'
+import AddPublishedRfc from './AddPublishedRfc.vue'
+
+const state = reactive({
+  githubModal: false,
+  publishedRfcModal: false
+})
 </script>
 
 <template>
@@ -15,7 +24,7 @@ import {
     <SidebarGroupLabel>Add document from...</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton as-child tooltip="item.title">
+        <SidebarMenuButton as-child tooltip="item.title" @click="state.githubModal = true">
           <a class="cursor-pointer">
             <Icon icon="lucide:github" />
             <span>GitHub</span>
@@ -23,7 +32,7 @@ import {
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton as-child tooltip="item.title">
+        <SidebarMenuButton as-child tooltip="item.title" @click="state.publishedRfcModal = true">
           <a class="cursor-pointer">
             <Icon icon="lucide:landmark" />
             <span>Published RFC</span>
@@ -48,4 +57,6 @@ import {
       </SidebarMenuItem>
     </SidebarMenu>
   </SidebarGroup>
+  <AddFromGitHub v-model:open="state.githubModal" />
+  <AddPublishedRfc v-model:open="state.publishedRfcModal" />
 </template>

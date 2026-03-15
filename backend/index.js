@@ -100,15 +100,18 @@ async function main() {
   if (!process.env.DIFF_SECRET || !process.env.DIFF_SALT) {
     console.warn('WARNING - Using random session secret + salt. For DEV only.')
   }
+  const maxSessionAge = 3 * 30 * 24 * 60 * 60 // 3 months
   app.register(fastifyCookie)
   app.register(fastifySecureSession, {
     cookieName: 'diffsession',
     secret: process.env.DIFF_SECRET ?? uuid(),
     salt: process.env.DIFF_SALT ?? uuid().substring(0, 16),
+    expiry: maxSessionAge,
     cookie: {
       path: '/',
       httpOnly: true,
-      secure: 'auto'
+      secure: 'auto',
+      maxAge: maxSessionAge
     }
   })
 

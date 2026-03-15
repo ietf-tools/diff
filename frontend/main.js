@@ -13,10 +13,24 @@ self.MonacoEnvironment = {
   }
 }
 
-const pinia = createPinia()
-pinia.use(piniaPluginPersistedstate)
 const app = createApp(App)
 
+// Setup Pinia
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
-app.use(VueQueryPlugin)
+
+// Setup Vue Query
+const vueQueryPluginOptions = {
+  queryClientConfig: {
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false
+      }
+    }
+  }
+}
+app.use(VueQueryPlugin, vueQueryPluginOptions)
+
+// Mount App
 app.mount('#app')
