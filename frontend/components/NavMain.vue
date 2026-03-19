@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { reactive } from 'vue'
 
 import {
   SidebarGroup,
@@ -10,11 +11,12 @@ import {
 } from '@/components/ui/sidebar'
 
 import AddFromGitHub from '@/components/AddFromGitHub.vue'
-import { reactive } from 'vue'
 import AddPublishedRfc from './AddPublishedRfc.vue'
 import AddUpload from './AddUpload.vue'
+import AddFromDatatracker from './AddFromDatatracker.vue'
 
 const state = reactive({
+  datatrackerModal: false,
   githubModal: false,
   publishedRfcModal: false,
   uploadModal: false
@@ -25,6 +27,14 @@ const state = reactive({
   <SidebarGroup>
     <SidebarGroupLabel>Add document from...</SidebarGroupLabel>
     <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton as-child tooltip="item.title" @click="state.datatrackerModal = true">
+          <a class="cursor-pointer">
+            <Icon icon="lucide:text-select" />
+            <span>Datatracker</span>
+          </a>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton as-child tooltip="item.title" @click="state.githubModal = true">
           <a class="cursor-pointer">
@@ -42,14 +52,6 @@ const state = reactive({
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton as-child tooltip="item.title">
-          <a class="cursor-pointer">
-            <Icon icon="lucide:rows-4" />
-            <span>Datatracker</span>
-          </a>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-      <SidebarMenuItem>
         <SidebarMenuButton as-child tooltip="item.title" @click="state.uploadModal = true">
           <a class="cursor-pointer">
             <Icon icon="lucide:upload" />
@@ -59,6 +61,7 @@ const state = reactive({
       </SidebarMenuItem>
     </SidebarMenu>
   </SidebarGroup>
+  <AddFromDatatracker v-model:open="state.datatrackerModal" />
   <AddFromGitHub v-model:open="state.githubModal" />
   <AddPublishedRfc v-model:open="state.publishedRfcModal" />
   <AddUpload v-model:open="state.uploadModal" />

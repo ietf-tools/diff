@@ -1,49 +1,24 @@
-<script setup lang="ts">
-import { Icon } from '@iconify/vue'
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar
-} from '@/components/ui/sidebar'
-
-defineProps<{
-  docs: {
-    name: string
-    id: string
-  }[]
-}>()
-
-const { isMobile } = useSidebar()
-</script>
-
 <template>
   <SidebarGroup class="group-data-[collapsible=icon]:hidden">
     <SidebarGroupLabel>Documents</SidebarGroupLabel>
     <SidebarMenu>
-      <SidebarMenuItem v-for="item in docs" :key="item.name">
+      <SidebarMenuItem v-if="docs.length < 1">
+        <SidebarMenuButton as-child>
+          <span class="text-gray-500 text-xs">No opened documents</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+      <SidebarMenuItem v-for="item in docs" :key="item.id">
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <SidebarMenuButton as-child>
               <a class="cursor-pointer">
                 <span
-                  v-if="item.id === '123'"
+                  v-if="item.id === sessions.leftDocId"
                   class="rounded bg-rose-600 text-white px-1 py-0.5 text-xs font-bold"
                   >L</span
                 >
                 <span
-                  v-else-if="item.id === '234'"
+                  v-else-if="item.id === sessions.rightDocId"
                   class="rounded bg-sky-600 text-white px-1 py-0.5 text-xs font-bold"
                   >R</span
                 >
@@ -75,3 +50,34 @@ const { isMobile } = useSidebar()
     </SidebarMenu>
   </SidebarGroup>
 </template>
+
+<script setup lang="ts">
+import { useSessionsStore } from '@/stores/sessions.js'
+import { computed } from 'vue'
+
+import { Icon } from '@iconify/vue'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import {
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar
+} from '@/components/ui/sidebar'
+
+const sessions = useSessionsStore()
+
+const { isMobile } = useSidebar()
+
+const docs = computed(() => {
+  return sessions.current?.docs ?? []
+})
+</script>

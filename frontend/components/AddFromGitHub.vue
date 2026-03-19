@@ -1,6 +1,6 @@
 <template>
   <Dialog>
-    <DialogContent :show-close-button="false" :tabindex="null">
+    <DialogContent :show-close-button="false" @pointerDownOutside.prevent :tabindex="null">
       <DialogHeader>
         <DialogTitle class="flex">
           <Icon icon="lucide:github" />
@@ -76,18 +76,36 @@
           <span class="italic text-xs">(optional, latest from default branch if empty)</span>
         </div>
       </div>
+      <div>
+        <Dialog v-model:open="state.isImporting">
+          <DialogContent
+            :show-close-button="false"
+            @pointer-down-outside.prevent
+            @escape-key-down.prevent
+            class="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle class="flex">
+                <Spinner class="size-5 text-purple-400" />
+                <span class="text-sm ml-2">Importing from GitHub...</span>
+              </DialogTitle>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </div>
       <DialogFooter>
         <DialogClose as-child>
           <Button variant="outline" class="cursor-pointer">Cancel</Button>
         </DialogClose>
-        <Button type="submit" :disabled="!canImport" class="cursor-pointer">Import</Button>
+        <Button type="submit" :disabled="!canImport" @click="importDoc" class="cursor-pointer"
+          >Import</Button
+        >
       </DialogFooter>
     </DialogContent>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue'
+import { computed, nextTick, reactive } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 
 import { Icon } from '@iconify/vue'
@@ -109,7 +127,8 @@ import { Spinner } from '@/components/ui/spinner'
 const state = reactive({
   repository: 'rfc-editor-drafts/draft-',
   filePath: '',
-  revision: ''
+  revision: '',
+  isImporting: false
 })
 
 const { isFetching, isError, data, error } = useQuery<{
@@ -133,4 +152,9 @@ const isGitHubLinked = computed(() => {
 const canImport = computed(() => {
   return !isFetching.value && state.repository?.length >= 3 && state.filePath?.length > 0
 })
+
+async function importDoc() {
+  state.isImporting = true
+  await nextTick()
+}
 </script>

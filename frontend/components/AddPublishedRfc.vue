@@ -13,7 +13,10 @@
       <div class="grid gap-8 my-3">
         <div class="grid gap-2">
           <Label for="searchq">Search</Label>
-          <Input id="searchq" name="searchq" placeholder="e.g. 1234 or IP over Avian Carriers" />
+          <Input
+            id="searchq"
+            name="searchq"
+            placeholder="e.g. 1234, IP over Avian Carriers, Vint Cerf, etc." />
         </div>
       </div>
       <DialogFooter>

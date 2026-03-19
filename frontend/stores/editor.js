@@ -6,5 +6,7 @@ export const useEditorStore = defineStore('editor', {
     flags: ['foldUnchanged', 'stripWhitespaces', 'wordwrap'],
     fontSize: 14
   }),
-  persist: true
+  persist: {
+    pick: ['viewMode', 'flags', 'fontSize']
+  }
 })

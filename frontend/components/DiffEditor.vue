@@ -14,11 +14,13 @@ import { useColorMode } from '@vueuse/core'
 import { debounce } from 'es-toolkit/function'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.main'
 
-import { useEditorStore } from '../stores/editor.js'
+import { useEditorStore } from '@/stores/editor.js'
+import { useSessionsStore } from '@/stores/sessions.js'
 import DiffHeader from './DiffHeader.vue'
 
 const colorMode = useColorMode({ disableTransition: false })
 const editorStore = useEditorStore()
+const sessions = useSessionsStore()
 
 monaco.languages.register({ id: 'xml' })
 monaco.languages.register({ id: 'markdown' })
@@ -57,13 +59,33 @@ onMounted(async () => {
   // )
 
   // Load sample data
-  const dataLeft = await fetch('/sample-data/draft-halen-fedae-03.xml').then((r) => r.text())
-  const dataRight = await fetch('/sample-data/rfc9932.notprepped.xml').then((r) => r.text())
+  // const dataLeft = await fetch('/sample-data/draft-halen-fedae-03.xml').then((r) => r.text())
+  // const dataRight = await fetch('/sample-data/rfc9932.notprepped.xml').then((r) => r.text())
 
   diffEditor.setModel({
-    original: monaco.editor.createModel(dataLeft, 'text/xml'),
-    modified: monaco.editor.createModel(dataRight, 'text/xml')
+    original: monaco.editor.createModel('', 'text/xml'),
+    modified: monaco.editor.createModel('', 'text/xml')
   })
+
+  // Update Models on change
+  watch(
+    () => sessions.leftDocId,
+    (docId) => {
+      diffEditor.setModel({
+        original: monaco.editor.createModel(sessions.leftDoc?.contents ?? '', 'text/xml'),
+        modified: monaco.editor.createModel(sessions.rightDoc?.contents ?? '', 'text/xml')
+      })
+    }
+  )
+  watch(
+    () => sessions.rightDocId,
+    (docId) => {
+      diffEditor.setModel({
+        original: monaco.editor.createModel(sessions.leftDoc?.contents ?? '', 'text/xml'),
+        modified: monaco.editor.createModel(sessions.rightDoc?.contents ?? '', 'text/xml')
+      })
+    }
+  )
 
   // Update Theme on change
   watch(

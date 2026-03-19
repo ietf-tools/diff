@@ -12,6 +12,7 @@ import fastifySecureSession from '@fastify/secure-session'
 import fastifyStatic from '@fastify/static'
 import fastifyOAuth2 from '@fastify/oauth2'
 import gracefulServer from '@gquittet/graceful-server'
+import ajvFormats from 'ajv-formats'
 
 const ROOTPATH = process.cwd()
 
@@ -21,6 +22,9 @@ async function main() {
   // ----------------------------------------
 
   const app = fastify({
+    ajv: {
+      plugins: [[ajvFormats, {}]]
+    },
     logger: {
       level: process.env.DIFF_LOG_LEVEL ?? 'warn'
     },

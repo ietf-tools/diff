@@ -1,34 +1,3 @@
-<script setup lang="ts">
-import { Icon } from '@iconify/vue'
-
-import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar
-} from '@/components/ui/sidebar'
-
-defineProps<{
-  docs: {
-    name: string
-    url: string
-  }[]
-}>()
-
-const { isMobile } = useSidebar()
-</script>
-
 <template>
   <SidebarGroup class="group-data-[collapsible=icon]:hidden">
     <SidebarGroupLabel class="pr-0.5">
@@ -40,9 +9,9 @@ const { isMobile } = useSidebar()
       </a>
     </SidebarGroupLabel>
     <SidebarMenu>
-      <SidebarMenuItem v-for="item in docs" :key="item.name">
+      <SidebarMenuItem v-for="item in sessions.all" :key="item.id">
         <SidebarMenuButton is-active as-child>
-          <a :href="item.url">
+          <a class="cursor-pointer">
             <Icon icon="lucide:gallery-vertical-end" />
             <span>{{ item.name }}</span>
           </a>
@@ -67,9 +36,39 @@ const { isMobile } = useSidebar()
               <Icon icon="lucide:x" />
               <span>Close Session</span>
             </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Icon icon="lucide:trash-2" />
+              <span>Delete Session</span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
   </SidebarGroup>
 </template>
+
+<script setup lang="ts">
+import { useSessionsStore } from '@/stores/sessions.js'
+
+import { Icon } from '@iconify/vue'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import {
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar
+} from '@/components/ui/sidebar'
+
+const sessions = useSessionsStore()
+
+const { isMobile } = useSidebar()
+</script>
