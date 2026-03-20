@@ -41,5 +41,6 @@ export const useSessionsStore = defineStore('sessions', {
         this.rightDocId = docId
       }
     }
-  }
+  },
+  persist: true
 })

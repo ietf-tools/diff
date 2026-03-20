@@ -1,6 +1,6 @@
 <template>
   <Dialog>
-    <DialogContent :show-close-button="false" :tabindex="null">
+    <DialogContent :show-close-button="false" @pointerDownOutside.prevent :tabindex="null">
       <DialogHeader>
         <DialogTitle class="flex">
           <Icon icon="lucide:upload" />

@@ -51,39 +51,23 @@ onMounted(async () => {
     theme: colorMode.state.value === 'light' ? 'vs' : 'vs-dark'
   })
 
-  // Store changes
-  // diffEditor.onDidUpdateDiff(
-  //   debounce((ev, bob) => {
-  //     console.log(ev, bob)
-  //   }, 500)
-  // )
-
-  // Load sample data
-  // const dataLeft = await fetch('/sample-data/draft-halen-fedae-03.xml').then((r) => r.text())
-  // const dataRight = await fetch('/sample-data/rfc9932.notprepped.xml').then((r) => r.text())
-
-  diffEditor.setModel({
-    original: monaco.editor.createModel('', 'text/xml'),
-    modified: monaco.editor.createModel('', 'text/xml')
-  })
-
   // Update Models on change
   watch(
-    () => sessions.leftDocId,
-    (docId) => {
+    [() => sessions.leftDocId, () => sessions.rightDocId, () => editorStore.contentType],
+    () => {
       diffEditor.setModel({
-        original: monaco.editor.createModel(sessions.leftDoc?.contents ?? '', 'text/xml'),
-        modified: monaco.editor.createModel(sessions.rightDoc?.contents ?? '', 'text/xml')
+        original: monaco.editor.createModel(
+          sessions.leftDoc?.contents ?? '',
+          `text/${editorStore.contentType}`
+        ),
+        modified: monaco.editor.createModel(
+          sessions.rightDoc?.contents ?? '',
+          `text/${editorStore.contentType}`
+        )
       })
-    }
-  )
-  watch(
-    () => sessions.rightDocId,
-    (docId) => {
-      diffEditor.setModel({
-        original: monaco.editor.createModel(sessions.leftDoc?.contents ?? '', 'text/xml'),
-        modified: monaco.editor.createModel(sessions.rightDoc?.contents ?? '', 'text/xml')
-      })
+    },
+    {
+      immediate: true
     }
   )
 

@@ -27,7 +27,7 @@
             </Tooltip>
           </TooltipProvider>
         </ButtonGroup>
-        <NativeSelect v-model="docsStore.contentType">
+        <NativeSelect v-model="editorStore.contentType">
           <NativeSelectOption value="markdown"> Markdown </NativeSelectOption>
           <NativeSelectOption value="plain"> Plain Text </NativeSelectOption>
           <NativeSelectOption value="xml"> XML </NativeSelectOption>
@@ -117,8 +117,6 @@
 
 <script setup>
 import { useIsFetching } from '@tanstack/vue-query'
-
-import { useDocsStore } from '../stores/docs.js'
 import { useEditorStore } from '../stores/editor.js'
 
 import { Button } from '@/components/ui/button/index.js'
@@ -143,7 +141,6 @@ import {
 } from '@/components/ui/tooltip/index.js'
 import { Icon } from '@iconify/vue'
 
-const docsStore = useDocsStore()
 const editorStore = useEditorStore()
 
 const isFetching = useIsFetching()
