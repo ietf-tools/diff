@@ -1,5 +1,5 @@
 <template>
-  <Dialog>
+  <Dialog ref="diag">
     <DialogContent :show-close-button="false" @pointerDownOutside.prevent :tabindex="null">
       <DialogHeader>
         <DialogTitle class="flex">
@@ -91,6 +91,24 @@
             </DialogHeader>
           </DialogContent>
         </Dialog>
+        <Dialog v-model:open="state.isError">
+          <DialogContent :show-close-button="false" class="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle class="flex justify-center-safe items-center">
+                <Icon icon="lucide:octagon-alert" class="text-red-400 size-8" />
+                <span class="text-sm font-normal text-red-800 dark:text-red-300 ml-4"
+                  >Failed to fetch draft. Ensure the repository and file path are valid, and that
+                  your GitHub account has read permissions to the repository.</span
+                >
+              </DialogTitle>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose as-child>
+                <Button variant="outline" class="cursor-pointer">Close</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
       <DialogFooter>
         <DialogClose as-child>
@@ -105,8 +123,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, reactive } from 'vue'
+import { computed, nextTick, reactive, useTemplateRef } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
+import ky from 'ky'
+
+import { useSessionsStore } from '@/stores/sessions.js'
 
 import { Icon } from '@iconify/vue'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -124,11 +145,16 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 
+const diag = useTemplateRef('diag')
+
+const sessions = useSessionsStore()
+
 const state = reactive({
   repository: 'rfc-editor-drafts/draft-',
   filePath: '',
   revision: '',
-  isImporting: false
+  isImporting: false,
+  isError: false
 })
 
 const { isFetching, isError, data, error } = useQuery<{
@@ -156,5 +182,22 @@ const canImport = computed(() => {
 async function importDoc() {
   state.isImporting = true
   await nextTick()
+  try {
+    const resp = await ky.post('/api/import/github', {
+      json: {
+        repository: state.repository,
+        filePath: state.filePath,
+        revision: state.revision
+      }
+    })
+    const contents = await resp.text()
+    sessions.addDocument(state.filePath.split('/').at(-1), contents)
+    diag.value.$emit('update:open', false)
+  } catch (err) {
+    console.warn(err)
+    state.isImporting = false
+    state.isError = true
+  }
+  state.isImporting = false
 }
 </script>
