@@ -14,9 +14,14 @@
       @open-auto-focus.prevent
       class="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle class="flex">
+        <DialogTitle class="flex items-center">
           <Spinner class="size-5 text-purple-400" />
-          <span class="text-sm ml-2">Computing diff...</span>
+          <span class="ml-2 flex flex-col">
+            <span class="text-sm">Computing diff...</span>
+            <span class="text-xs font-normal text-gray-600 dark:text-gray-400">{{
+              randomFunnyMsg
+            }}</span>
+          </span>
         </DialogTitle>
       </DialogHeader>
     </DialogContent>
@@ -24,8 +29,9 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, reactive, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, onMounted, reactive, useTemplateRef, watch } from 'vue'
 import { useColorMode } from '@vueuse/core'
+import { sample } from 'es-toolkit/array'
 import { debounce } from 'es-toolkit/function'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.main'
 
@@ -46,6 +52,25 @@ const editorRef = useTemplateRef('editor')
 
 const state = reactive({
   isComputing: false
+})
+
+const funnyMsgs = [
+  'Reticulating splines...',
+  'Realigning flux capacitor...',
+  'Stabilizing positronic phase discriminator...',
+  'Energizing warp drive core...',
+  'Inverting quantum field containment...',
+  'Powering subharmonic plasma conduit...',
+  'Increasing nanowave pulse processor...',
+  'De-polarizing metaphasic impulse converter...',
+  'Detecting spatial interphasic anomalies...',
+  'Synchronizing anaphasic particle field...',
+  'Decreasing electro-plasma axionic beam...',
+  'Tabulating 4D spacetime fabric velocity...'
+]
+
+const randomFunnyMsg = computed(() => {
+  return state.isComputing && sample(funnyMsgs)
 })
 
 onMounted(async () => {
