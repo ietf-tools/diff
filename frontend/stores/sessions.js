@@ -26,12 +26,13 @@ export const useSessionsStore = defineStore('sessions', {
     }
   },
   actions: {
-    addDocument(name, contents) {
+    addDocument(name, contents, subtitle = '') {
       const docId = uuid()
 
       this.current.docs.push({
         id: docId,
         name,
+        subtitle,
         contents
       })
 

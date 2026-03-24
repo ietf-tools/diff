@@ -59,7 +59,7 @@
               <DialogTitle class="flex justify-center-safe items-center">
                 <Icon icon="lucide:octagon-alert" class="text-red-400 size-8" />
                 <span class="text-sm font-normal text-red-800 dark:text-red-300 ml-4"
-                  >Failed to fetch draft. Ensure the draft name and version is valid.</span
+                  >Failed to fetch draft. Ensure the draft name and version are valid.</span
                 >
               </DialogTitle>
             </DialogHeader>
@@ -133,9 +133,11 @@ async function importDoc() {
       }
     })
     const contents = await resp.text()
+    const versionFormatted = state.version.padStart(2, '0')
     sessions.addDocument(
-      `${state.draft}-${state.version.padStart(2, '0')}.${state.format}`,
-      contents
+      `${state.draft}-${versionFormatted}.${state.format}`,
+      contents,
+      `version ${versionFormatted}`
     )
     diag.value.$emit('update:open', false)
   } catch (err) {

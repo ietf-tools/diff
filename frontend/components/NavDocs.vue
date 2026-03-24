@@ -11,7 +11,7 @@
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <SidebarMenuButton as-child>
-              <a class="cursor-pointer">
+              <a class="cursor-pointer h-10">
                 <span
                   v-if="item.id === sessions.leftDocId"
                   class="rounded bg-rose-600 text-white px-1 py-0.5 text-xs font-bold"
@@ -23,7 +23,12 @@
                   >R</span
                 >
                 <Icon v-else icon="lucide:file-text" />
-                <span class="w-full">{{ fitTitle(item.name) }}</span>
+                <span class="w-full flex flex-col">
+                  <span>{{ fitTitle(item.name) }}</span>
+                  <span v-if="item.subtitle" class="text-xs text-gray-500 dark:text-gray-400">{{
+                    item.subtitle
+                  }}</span>
+                </span>
               </a>
             </SidebarMenuButton>
           </DropdownMenuTrigger>

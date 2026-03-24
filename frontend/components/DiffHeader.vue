@@ -12,8 +12,8 @@
         </Tooltip>
       </TooltipProvider>
       <Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
-      <ButtonGroup>
-        <ButtonGroup class="hidden sm:flex">
+      <div class="flex gap-4">
+        <!-- <ButtonGroup class="hidden sm:flex">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger as-child>
@@ -26,7 +26,7 @@
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        </ButtonGroup>
+        </ButtonGroup> -->
         <NativeSelect v-model="editorStore.contentType">
           <NativeSelectOption value="markdown"> Markdown </NativeSelectOption>
           <NativeSelectOption value="plain"> Plain Text </NativeSelectOption>
@@ -110,7 +110,7 @@
         <div class="flex items-center">
           <Spinner class="size-5 text-purple-400" v-show="isFetching" />
         </div>
-      </ButtonGroup>
+      </div>
     </div>
   </header>
 </template>

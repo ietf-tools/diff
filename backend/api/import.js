@@ -93,7 +93,10 @@ async function routes(app) {
         }
       })
 
-      return reply.type('text/plain; charset=utf-8').send(resp.data)
+      return reply
+        .header('last-modified', resp.headers['last-modified'])
+        .type('text/plain; charset=utf-8')
+        .send(resp.data)
     }
   )
 }

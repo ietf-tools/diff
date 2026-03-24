@@ -6,10 +6,25 @@
       ref="editor"
       class="bg-muted/50 min-h-content flex-1 rounded-xl contain-paint"></div>
   </div>
+  <Dialog v-model:open="state.isComputing">
+    <DialogContent
+      :show-close-button="false"
+      @pointer-down-outside.prevent
+      @escape-key-down.prevent
+      @open-auto-focus.prevent
+      class="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle class="flex">
+          <Spinner class="size-5 text-purple-400" />
+          <span class="text-sm ml-2">Computing diff...</span>
+        </DialogTitle>
+      </DialogHeader>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup>
-import { onMounted, useTemplateRef, watch } from 'vue'
+import { nextTick, onMounted, reactive, useTemplateRef, watch } from 'vue'
 import { useColorMode } from '@vueuse/core'
 import { debounce } from 'es-toolkit/function'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.main'
@@ -18,6 +33,9 @@ import { useEditorStore } from '@/stores/editor.js'
 import { useSessionsStore } from '@/stores/sessions.js'
 import DiffHeader from './DiffHeader.vue'
 
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Spinner } from '@/components/ui/spinner'
+
 const colorMode = useColorMode({ disableTransition: false })
 const editorStore = useEditorStore()
 const sessions = useSessionsStore()
@@ -25,6 +43,10 @@ const sessions = useSessionsStore()
 monaco.languages.register({ id: 'xml' })
 monaco.languages.register({ id: 'markdown' })
 const editorRef = useTemplateRef('editor')
+
+const state = reactive({
+  isComputing: false
+})
 
 onMounted(async () => {
   // Create diff editor
@@ -51,19 +73,32 @@ onMounted(async () => {
     theme: colorMode.state.value === 'light' ? 'vs' : 'vs-dark'
   })
 
+  diffEditor.onDidUpdateDiff(() => {
+    // Event is triggered early when replacing existing new models
+    // Workaround is to check getLineChanges()
+    // getLineChanges() is null while the diff is computing in the background
+    if (diffEditor.getLineChanges() !== null) {
+      state.isComputing = false
+    }
+  })
+
   // Update Models on change
   watch(
     [() => sessions.leftDocId, () => sessions.rightDocId, () => editorStore.contentType],
     () => {
-      diffEditor.setModel({
-        original: monaco.editor.createModel(
-          sessions.leftDoc?.contents ?? '',
-          `text/${editorStore.contentType}`
-        ),
-        modified: monaco.editor.createModel(
-          sessions.rightDoc?.contents ?? '',
-          `text/${editorStore.contentType}`
-        )
+      state.isComputing = true
+
+      nextTick(() => {
+        diffEditor.setModel({
+          original: monaco.editor.createModel(
+            sessions.leftDoc?.contents ?? '',
+            `text/${editorStore.contentType}`
+          ),
+          modified: monaco.editor.createModel(
+            sessions.rightDoc?.contents ?? '',
+            `text/${editorStore.contentType}`
+          )
+        })
       })
     },
     {

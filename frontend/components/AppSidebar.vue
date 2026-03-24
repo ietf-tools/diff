@@ -7,7 +7,7 @@
             <a>
               <div
                 class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <Command class="size-4" />
+                <Icon icon="lucide:command" class="size-4" />
               </div>
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-medium">RFC-Editor</span>
@@ -20,12 +20,12 @@
     </SidebarHeader>
     <SidebarContent>
       <NavMain />
-      <NavSessions :docs="data.sessions" />
-      <NavDocs :docs="data.docs" />
+      <NavSessions />
+      <NavDocs />
       <NavSecondary class="mt-auto" />
     </SidebarContent>
     <SidebarFooter>
-      <NavUser :user="data.user" />
+      <NavUser />
     </SidebarFooter>
   </Sidebar>
 </template>
@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import type { SidebarProps } from '@/components/ui/sidebar'
 
-import { Command } from 'lucide-vue-next'
+import { Icon } from '@iconify/vue'
 
 import NavMain from '@/components/NavMain.vue'
 import NavDocs from '@/components/NavDocs.vue'
@@ -53,32 +53,4 @@ import {
 const props = withDefaults(defineProps<SidebarProps>(), {
   variant: 'inset'
 })
-
-const data = {
-  user: {
-    name: 'Guest',
-    email: 'guest@rfc-editor.org',
-    avatar: ''
-  },
-  docs: [
-    {
-      id: '123',
-      name: 'draft-halen-fedae-03.xml'
-    },
-    {
-      id: '234',
-      name: 'rfc9932.notprepped.xml'
-    },
-    {
-      id: '345',
-      name: 'Untitled-1.xml'
-    }
-  ],
-  sessions: [
-    {
-      name: 'Untitled 1',
-      url: '#'
-    }
-  ]
-}
 </script>

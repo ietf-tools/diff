@@ -126,6 +126,7 @@
 import { computed, nextTick, reactive, useTemplateRef } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import ky from 'ky'
+import { DateTime } from 'luxon'
 
 import { useSessionsStore } from '@/stores/sessions.js'
 
@@ -190,8 +191,12 @@ async function importDoc() {
         revision: state.revision
       }
     })
+    let lastModified = resp.headers.get('last-modified') ?? ''
+    if (lastModified) {
+      lastModified = DateTime.fromHTTP(lastModified).toLocal().toFormat('LLL d, yyyy HH:mm')
+    }
     const contents = await resp.text()
-    sessions.addDocument(state.filePath.split('/').at(-1), contents)
+    sessions.addDocument(state.filePath.split('/').at(-1), contents, lastModified)
     diag.value.$emit('update:open', false)
   } catch (err) {
     console.warn(err)
