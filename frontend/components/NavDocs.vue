@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { useSessionsStore } from '@/stores/sessions.js'
+import { useSessionsStore, docsData } from '@/stores/sessions.js'
 import { computed, reactive } from 'vue'
 
 import { Icon } from '@iconify/vue'
@@ -116,7 +116,7 @@ const docs = computed(() => {
 })
 
 function fitTitle(val: string) {
-  if (val.length > 28) {
+  if (val?.length > 28) {
     return val.substring(0, 15) + '...' + val.substring(val.length - 10, val.length)
   }
   return val
@@ -136,6 +136,7 @@ function deleteDoc() {
   if (sessions.rightDocId === state.deleteWarnId) {
     sessions.rightDocId = ''
   }
+  docsData.removeItem(state.deleteWarnId)
   state.deleteWarnId = ''
   state.deleteWarnTitle = ''
   state.deleteWarnShown = false

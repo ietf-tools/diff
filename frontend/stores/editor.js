@@ -1,13 +1,16 @@
 import { defineStore } from 'pinia'
+import { useStorage } from '@vueuse/core'
 
-export const useEditorStore = defineStore('editor', {
-  state: () => ({
-    viewMode: 'side-by-side',
-    flags: ['foldUnchanged', 'stripWhitespaces', 'wordwrap'],
-    fontSize: 14,
-    contentType: 'xml'
-  }),
-  persist: {
-    pick: ['viewMode', 'flags', 'fontSize']
+export const useEditorStore = defineStore('editor', () => {
+  const viewMode = useStorage('editorViewMode', 'side-by-side')
+  const flags = useStorage('editorFlags', ['foldUnchanged', 'stripWhitespaces', 'wordwrap'])
+  const fontSize = useStorage('editorFontSize', 14)
+  const contentType = useStorage('editorContentType', 'xml')
+
+  return {
+    viewMode,
+    flags,
+    fontSize,
+    contentType
   }
 })

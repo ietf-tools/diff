@@ -119,8 +119,6 @@
 import { useIsFetching } from '@tanstack/vue-query'
 import { useEditorStore } from '../stores/editor.js'
 
-import { Button } from '@/components/ui/button/index.js'
-import { ButtonGroup } from '@/components/ui/button-group/index.js'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select/index.js'
 import {
   NumberField,

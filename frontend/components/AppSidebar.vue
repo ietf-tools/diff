@@ -19,9 +19,9 @@
       </SidebarMenu>
     </SidebarHeader>
     <SidebarContent>
-      <NavMain />
       <NavSessions />
       <NavDocs />
+      <NavMain />
       <NavSecondary class="mt-auto" />
     </SidebarContent>
     <SidebarFooter>

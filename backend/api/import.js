@@ -99,6 +99,48 @@ async function routes(app) {
         .send(resp.data)
     }
   )
+  /**
+   * FETCH RFC
+   */
+  app.post(
+    '/rfc',
+    {
+      schema: {
+        body: {
+          type: 'object',
+          required: ['rfc', 'format', 'unprepped'],
+          properties: {
+            rfc: {
+              type: 'string',
+              pattern: '[0-9]+'
+            },
+            format: {
+              type: 'string',
+              enum: ['xml', 'txt']
+            },
+            unprepped: {
+              type: 'boolean'
+            }
+          }
+        }
+      }
+    },
+    async function (req, reply) {
+      if (req.body.unprepped && req.body.format !== 'xml') {
+        return reply.badRequest('Format must be XML when unprepped is selected.')
+      }
+      const resp = await fetch(
+        req.body.unprepped
+          ? `https://datatracker.ietf.org/doc/rfc${req.body.rfc}/notprepped/`
+          : `https://www.rfc-editor.org/rfc/rfc${req.body.rfc}.${req.body.format}`
+      )
+      if (resp.ok) {
+        return ReadableStream.from(resp.body)
+      } else {
+        reply.badRequest('Failed to fetch RFC.')
+      }
+    }
+  )
 }
 
 export default routes

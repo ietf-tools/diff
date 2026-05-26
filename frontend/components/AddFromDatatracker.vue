@@ -134,12 +134,12 @@ async function importDoc() {
     })
     const contents = await resp.text()
     const versionFormatted = state.version.padStart(2, '0')
-    sessions.addDocument(
+    await sessions.addDocument(
       `${state.draft}-${versionFormatted}.${state.format}`,
       contents,
       `version ${versionFormatted}`
     )
-    diag.value.$emit('update:open', false)
+    diag.value?.$emit('update:open', false)
   } catch (err) {
     console.warn(err)
     state.isImporting = false

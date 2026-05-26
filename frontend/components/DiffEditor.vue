@@ -36,7 +36,7 @@ import { debounce } from 'es-toolkit/function'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.main'
 
 import { useEditorStore } from '@/stores/editor.js'
-import { useSessionsStore } from '@/stores/sessions.js'
+import { useSessionsStore, docsData } from '@/stores/sessions.js'
 import DiffHeader from './DiffHeader.vue'
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -70,7 +70,7 @@ const funnyMsgs = [
 ]
 
 const randomFunnyMsg = computed(() => {
-  return state.isComputing && sample(funnyMsgs)
+  return state.isComputing ? sample(funnyMsgs) : 'Tidying up...'
 })
 
 onMounted(async () => {
@@ -113,14 +113,14 @@ onMounted(async () => {
     () => {
       state.isComputing = true
 
-      nextTick(() => {
+      nextTick(async () => {
         diffEditor.setModel({
           original: monaco.editor.createModel(
-            sessions.leftDoc?.contents ?? '',
+            (await docsData.getItem(sessions.leftDocId)) ?? '',
             `text/${editorStore.contentType}`
           ),
           modified: monaco.editor.createModel(
-            sessions.rightDoc?.contents ?? '',
+            (await docsData.getItem(sessions.rightDocId)) ?? '',
             `text/${editorStore.contentType}`
           )
         })

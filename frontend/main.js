@@ -5,7 +5,6 @@ import { createPinia } from 'pinia'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { isPlainObject } from 'es-toolkit/predicate'
 import ky from 'ky'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import App from './App.vue'
 
@@ -19,7 +18,6 @@ const app = createApp(App)
 
 // Setup Pinia
 const pinia = createPinia()
-pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 
 // Setup Vue Query

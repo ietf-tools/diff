@@ -4,7 +4,7 @@ Website to compare different versions of a draft / RFC.
 
 ## Prerequisites
 
-- Node.js 24.x
+- Node.js 26.x
 
 ## Project Setup
 

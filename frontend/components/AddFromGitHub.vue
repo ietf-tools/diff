@@ -126,7 +126,7 @@
 import { computed, nextTick, reactive, useTemplateRef } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import ky from 'ky'
-import { DateTime } from 'luxon'
+import { Temporal } from '@js-temporal/polyfill'
 
 import { useSessionsStore } from '@/stores/sessions.js'
 
@@ -193,11 +193,20 @@ async function importDoc() {
     })
     let lastModified = resp.headers.get('last-modified') ?? ''
     if (lastModified) {
-      lastModified = DateTime.fromHTTP(lastModified).toLocal().toFormat('LLL d, yyyy HH:mm')
+      lastModified = Temporal.Instant.fromEpochMilliseconds(Date.parse(lastModified))
+        .toZonedDateTimeISO(Temporal.Now.timeZoneId())
+        .toLocaleString('en', {
+          month: 'short', // "May"
+          day: 'numeric', // "23"
+          year: 'numeric', // "2025"
+          hour: '2-digit', // "08"
+          minute: '2-digit', // "34"
+          hour12: false
+        })
     }
     const contents = await resp.text()
-    sessions.addDocument(state.filePath.split('/').at(-1), contents, lastModified)
-    diag.value.$emit('update:open', false)
+    await sessions.addDocument(state.filePath.split('/').at(-1), contents, lastModified)
+    diag.value?.$emit('update:open', false)
   } catch (err) {
     console.warn(err)
     state.isImporting = false

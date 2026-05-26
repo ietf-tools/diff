@@ -1,47 +1,67 @@
 import { defineStore } from 'pinia'
+import { computed } from 'vue'
 import { v4 as uuid } from 'uuid'
+import { useStorage } from '@vueuse/core'
+import localforage from 'localforage'
 
-export const useSessionsStore = defineStore('sessions', {
-  state: () => ({
-    currentId: 'untitled',
-    all: [
-      {
-        id: 'untitled',
-        name: 'Untitled',
-        docs: []
-      }
-    ],
-    leftDocId: '',
-    rightDocId: ''
-  }),
-  getters: {
-    current(state) {
-      return state.all.find((s) => s.id === state.currentId)
+localforage.config({
+  name: 'diff'
+})
+
+export const docsData = localforage
+
+export const useSessionsStore = defineStore('sessions', () => {
+  // STATE
+  const currentId = useStorage('sessionsCurrentId', 'untitled')
+  const all = useStorage('sessionsAll', [
+    {
+      id: 'untitled',
+      name: 'Untitled',
+      docs: [],
+      kind: 'personal'
     },
-    leftDoc(state) {
-      return this.current.docs?.find((d) => d.id === state.leftDocId)
-    },
-    rightDoc(state) {
-      return this.current.docs?.find((d) => d.id === state.rightDocId)
+    {
+      id: 'draft-ietf-detnet-controller-plane-framework',
+      name: 'draft-ietf-detnet-controller-plane-framework',
+      docs: [],
+      kind: 'github'
     }
-  },
-  actions: {
-    addDocument(name, contents, subtitle = '') {
-      const docId = uuid()
+  ])
+  const leftDocId = useStorage('sessionsLeftDocId', '')
+  const rightDocId = useStorage('sessionsRightDocId', '')
 
-      this.current.docs.push({
-        id: docId,
-        name,
-        subtitle,
-        contents
-      })
+  // GETTERS
+  const current = computed(() => all.value.find((s) => s.id === currentId.value))
+  const leftDoc = computed(() => current.value.find((d) => d.id === leftDocId.value))
+  const rightDoc = computed(() => current.value.find((d) => d.id === rightDocId.value))
 
-      if (!this.leftDocId) {
-        this.leftDocId = docId
-      } else if (!this.rightDocId) {
-        this.rightDocId = docId
-      }
+  // ACTIONS
+  async function addDocument(name, contents, subtitle = '') {
+    const docId = uuid()
+
+    await localforage.setItem(docId, contents)
+
+    current.value.docs.push({
+      id: docId,
+      name,
+      subtitle
+    })
+
+    if (!leftDocId.value) {
+      leftDocId.value = docId
+    } else if (!rightDocId.value) {
+      rightDocId.value = docId
     }
-  },
-  persist: true
+  }
+
+  return {
+    currentId,
+    all,
+    leftDocId,
+    rightDocId,
+    current,
+    leftDoc,
+    rightDoc,
+    addDocument
+  }
 })
