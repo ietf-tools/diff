@@ -28,7 +28,7 @@ const inverseTheme = computed(() => (mode.value === 'dark' ? 'light' : 'dark'))
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton as-child size="sm">
-            <a href="https://www.rfc-editor.org/contact/">
+            <a href="https://www.rfc-editor.org/contact/" target="_blank">
               <Icon icon="lucide:circle-question-mark" />
               <span>Help &amp; Support</span>
             </a>
