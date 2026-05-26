@@ -99,6 +99,7 @@
 
 <script setup lang="ts">
 import ky from 'ky'
+import { computed, nextTick, reactive, useTemplateRef, watch } from 'vue'
 import { debounce } from 'es-toolkit/function'
 import { Temporal } from '@js-temporal/polyfill'
 
@@ -121,7 +122,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { computed, nextTick, reactive, useTemplateRef, watch } from 'vue'
+import { Spinner } from '@/components/ui/spinner'
 
 const diag = useTemplateRef('diag')
 
